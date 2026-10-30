@@ -26,6 +26,8 @@ Flat areas are where the input's smoothed gradient (Sobel at sigma 2) stays unde
 
 ## Datasets and their terms
 
+**The datasets are not in this repository.** Each one is downloaded separately, from its own source, by whoever runs the benchmark, with the `fetch` command: `opai-bench fetch aim` and `opai-bench fetch spring`. Run them once, before the suites that need them (the synthetic gradient needs no download). `fetch` first shows the dataset's terms and asks you to agree; the files go to `data/` (or `--data`), which git ignores.
+
 | Dataset | Used for | Licence and terms | Get it |
 |---|---|---|---|
 | [AIM-500](https://github.com/JizhiziLi/AIM) (Li, Zhang and Tao, IJCAI 2021) | the lens blur's matte (467 photographs with a single subject); the photographs of the sharpen suite, `precision` and `models` | MIT under the [AIM-500 release agreement](https://jizhizili.github.io/files/aim_dataset_agreement/AIM-500_Dataset_Release_Agreement.pdf): read and agree to it first, cite the paper; the photographs' copyright stays with their owners; do not redistribute | `fetch aim`, from the Hugging Face mirror `nobg/AIM-500` (~470 MB; adds each photo's category and type); the official download is linked from the [AIM repository](https://github.com/JizhiziLi/AIM), should the mirror go |
@@ -54,6 +56,7 @@ The lens blur suite needs a build with the fork's `OPAI_BENCH_DUMP` hook (bookma
 ## Quick start
 
 ```sh
+# 1. Fetch the datasets (once; they are downloaded separately, not part of the repo)
 uv run opai-bench fetch aim                  # shows the terms, asks for "yes"
 uv run opai-bench fetch spring --accept      # agrees without asking (recorded)
 
