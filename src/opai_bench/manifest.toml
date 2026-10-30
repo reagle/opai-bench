@@ -1,5 +1,6 @@
-# The datasets opai-bench scores against. None of their files are in this repository: each is downloaded from its
-# official source under its own terms (`bench.py fetch`, or by hand where the source needs it).
+# The datasets and suites opai-bench scores against. None of the datasets' files are in this repository: each is
+# downloaded from its official source under its own terms (`opai-bench fetch`, which shows them and asks for agreement
+# first, or by hand where the source needs it). This file is package data, so an installed `opai-bench` reads the same.
 
 [aim]
 name = "AIM-500 (Automatic Image Matting)"
@@ -10,10 +11,19 @@ licence_images = "MIT (the AIM-500 v1.0 release agreement); the photos were coll
 licence_ground_truth = "MIT (the AIM-500 v1.0 release agreement)"
 agreement = "https://jizhizili.github.io/files/aim_dataset_agreement/AIM-500_Dataset_Release_Agreement.pdf"
 use = "Scores the lens blur's subject matte against hand-made mattes: animals (fur), plants (gaps), transparent things, portraits, furniture, toys"
+# What `fetch aim` shows and asks the user to agree to.
+terms = [
+    "AIM-500 is released under the AIM-500 v1.0 Dataset Release Agreement: https://jizhizili.github.io/files/aim_dataset_agreement/AIM-500_Dataset_Release_Agreement.pdf --- read it before downloading.",
+    "Cite the paper in any work that uses it: Li, Zhang and Tao, Deep Automatic Natural Image Matting, IJCAI 2021.",
+    "The photographs were collected from websites with free-use licences; their copyright stays with their owners.",
+    "Do not redistribute the dataset or its photographs. opai-bench keeps scores only, never the images.",
+    "The download comes from the Hugging Face mirror nobg/AIM-500; the official one is linked from https://github.com/JizhiziLi/AIM, should the mirror go.",
+]
+size = "~470 MB"
 kind = "matte"
-# `bench.py fetch aim`, from the Hugging Face mirror (its masks match the authors' Google Drive copies; Drive throttles
-# folder downloads). Read and agree to the release agreement first.
-default_path = "data/AIM-500"
+# `fetch aim`, from the Hugging Face mirror (its masks match the authors' Google Drive copies; Drive throttles folder
+# downloads).
+folder = "AIM-500"
 images = "original"
 mattes = "mask"
 matte_suffix = ".png"
@@ -39,13 +49,35 @@ citation = "Mehl, Schmalfuss, Jahedi, Nalivayko and Bruhn, Spring: A High-Resolu
 licence_images = "CC BY 4.0"
 licence_ground_truth = "CC BY 4.0"
 use = "Scores the depth model's map (ordering and occlusion boundaries) against Spring's stereo disparity"
+terms = [
+    "Spring is licensed under Creative Commons Attribution 4.0 (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/",
+    "Attribute it wherever you use or share anything made from it: Mehl, Schmalfuss, Jahedi, Nalivayko and Bruhn, Spring: A High-Resolution High-Detail Dataset and Benchmark for Scene Flow, Optical Flow and Stereo, CVPR 2023, https://doi.org/10.18419/DARUS-3376",
+    "Its frames are renders of the Blender Studio open film Spring.",
+]
+size = "~300 MB (one frame a scene, 37 scenes)"
 # DaRUS file ids: left frames, left disparity. `fetch` reads single members out of the remote zips with HTTP ranges.
 frames_file = 199097
 disparity_file = 198961
 member_frame = "spring/train/{scene}/frame_left/frame_left_{frame:04d}.png"
 member_disparity = "spring/train/{scene}/disp1_left/disp1_left_{frame:04d}.dsp5"
-default_path = "data/spring"
+folder = "spring"
 # One frame a scene, the middle one; quick tier: the first N scenes.
 quick = 10
 # Core tier: the worst, median and best depth edges, the most depth edges, the worst ordering.
 core = ["0041", "0013", "0038", "0007", "0008"]
+
+[sharpen]
+# The sharpen/denoise suite (`run TAG --suite sharpen`): every sharpen model and Stockholm denoise at their defaults, on
+# AIM-500 photographs (NS ones too: the suite needs no subject) and the built-in synthetic gradient.
+models = [["sharpen", "moscow"], ["sharpen", "petersburg"], ["sharpen", "novgorod"], ["denoise", "stockholm"]]
+# Core tier, from the 2026-10-30 sharpen investigation: large flat areas where mottle and seams show (o_f12a8afc sky and
+# backdrop behind a portrait; o_093764ca, a plant, and o_508fa8da, furniture, two of the set's flattest by share of
+# low-gradient pixels), and detailed ones where the edge gain shows (o_ddae6d29 see-through, o_c01ea2f5 portrait,
+# o_09b8ed47 the busiest background of the set).
+core = ["o_f12a8afc", "o_093764ca", "o_508fa8da", "o_ddae6d29", "o_c01ea2f5", "o_09b8ed47"]
+# Quick tier: the core plus every Nth AIM-500 photograph in name order.
+quick_every = 10
+# The tile grid the sharpen and denoise models run on (`crates/opai/src/models/filter.rs`: 256-px tiles, 16-px overlap,
+# so a seam every 240 px). Change with --tile/--overlap where a build differs.
+tile = 256
+overlap = 16

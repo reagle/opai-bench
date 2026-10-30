@@ -1,4 +1,9 @@
 data
 runs
+opai-home
+.venv
 __pycache__/
 .ruff_cache/
+.pytest_cache/
+AGENTS.md
+CLAUDE.md
