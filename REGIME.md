@@ -16,6 +16,17 @@ How Open Photo AI's lens blur and its sharpen and denoise models are checked aga
 
 Tags: `base-<short commit>` and `sharpen-base-<short commit>` for an installed build, `<bookmark>-<n>` for a change under test; `precision` and `models` name their own runs (`precision-<model>-<version>`) unless given `--tag`. Runs live in `runs/` (on the bench disk, `/Volumes/opai-bench`, not in the repository). Only one opai runs at a time: the suites run each photograph in turn.
 
+## How much to run
+
+Outputs are deterministic, so more photographs buy coverage of kinds of photograph, not statistical confidence. Escalate only as far as the decision needs:
+
+1. **The problem photographs** behind the change (3--5): does it fix what it was made for?
+2. **core** (20) for any change to a pipeline (depth, trimap, matte, render, a filter).
+3. **quick** (94) only for a model swap, or when core is close or mixed (a gain of a few per cent, or items moving both ways).
+4. **full** (467) only before merging something that could matter widely.
+
+Reuse an existing reference run of the same build rather than re-running it. Clear the run cache only when time or first-run behaviour is what is measured; otherwise the cache makes repeats free and is keyed by inputs, so it cannot serve a stale result. Run one heavy job at a time, so times and memory are not bent by a second one. When reviewing in the GUI, open only the photographs the change concerns.
+
 ## What counts as a regression
 
 `check` fails where the new build's means are worse than the reference's by more than the limit, model by model for the enhancement suites. A relative limit never allows less than its floor, so a measure near zero does not fail on noise.
