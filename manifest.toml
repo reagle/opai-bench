@@ -1,0 +1,51 @@
+# The datasets opai-bench scores against. None of their files are in this repository: each is downloaded from its
+# official source under its own terms (`bench.py fetch`, or by hand where the source needs it).
+
+[aim]
+name = "AIM-500 (Automatic Image Matting)"
+source = "https://github.com/JizhiziLi/AIM"
+mirror = "https://huggingface.co/datasets/nobg/AIM-500/resolve/main/data/test-00000-of-00001.parquet"
+citation = "Li, Zhang and Tao, Deep Automatic Natural Image Matting, IJCAI 2021"
+licence_images = "MIT (the AIM-500 v1.0 release agreement); the photos were collected from websites with free use licences and their copyright stays with their owners"
+licence_ground_truth = "MIT (the AIM-500 v1.0 release agreement)"
+agreement = "https://jizhizili.github.io/files/aim_dataset_agreement/AIM-500_Dataset_Release_Agreement.pdf"
+use = "Scores the lens blur's subject matte against hand-made mattes: animals (fur), plants (gaps), transparent things, portraits, furniture, toys"
+kind = "matte"
+# `bench.py fetch aim`, from the Hugging Face mirror (its masks match the authors' Google Drive copies; Drive throttles
+# folder downloads). Read and agree to the release agreement first.
+default_path = "data/AIM-500"
+images = "original"
+mattes = "mask"
+matte_suffix = ".png"
+# Non-salient photos have no single subject to focus on.
+skip_types = ["NS"]
+f_number = 1.4
+quick_every = 5
+# Core tier, curated by Joseph on 2026-10-29 from photographs whose background is busy and sharp (the top quarter by
+# select_core.background_detail), so the blur shows, plus his own picks; trimmed to 20 so no two test the same thing.
+# Animals: o_09b8ed47 busiest background, o_3a9a5e7c receding background, o_36d9b42a camel on receding ground,
+# o_23bbcc9d deer behind a plant (something nearer), o_1467861e furriest macaque with something in front, o_0df5178f fur
+# on dark, o_798a02d7 dark, with depth of its own. Portraits: o_202fb858 hardest, o_71dcc519 most flyaway hair,
+# o_c56a90a4 hair, o_f12a8afc dark subject. See-through: o_f3d0f881 and o_fabaf6e3, mesh bags of apples. Plants:
+# o_0810cb44 soft foliage, o_82a97798 strong background blur. Holes: o_e4a72c06 chair, o_b3b7ad01 park bench with depth.
+# Toy: o_7a796168 fluffy, with depth. Controls: o_be34e76b plain fruit, o_e30ce6cb blurs too little to be matted (the
+# skip must stay right). Judged by eye only (labelled NS, which the bench skips): o_1ea2b894 see-through, o_60104376 net.
+core = ["o_09b8ed47", "o_3a9a5e7c", "o_36d9b42a", "o_23bbcc9d", "o_1467861e", "o_0df5178f", "o_798a02d7", "o_202fb858", "o_71dcc519", "o_c56a90a4", "o_f12a8afc", "o_f3d0f881", "o_fabaf6e3", "o_0810cb44", "o_82a97798", "o_e4a72c06", "o_b3b7ad01", "o_7a796168", "o_be34e76b", "o_e30ce6cb"]
+
+[spring]
+name = "Spring (scene flow, optical flow and stereo)"
+source = "https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/DARUS-3376"
+citation = "Mehl, Schmalfuss, Jahedi, Nalivayko and Bruhn, Spring: A High-Resolution High-Detail Dataset and Benchmark for Scene Flow, Optical Flow and Stereo, CVPR 2023"
+licence_images = "CC BY 4.0"
+licence_ground_truth = "CC BY 4.0"
+use = "Scores the depth model's map (ordering and occlusion boundaries) against Spring's stereo disparity"
+# DaRUS file ids: left frames, left disparity. `fetch` reads single members out of the remote zips with HTTP ranges.
+frames_file = 199097
+disparity_file = 198961
+member_frame = "spring/train/{scene}/frame_left/frame_left_{frame:04d}.png"
+member_disparity = "spring/train/{scene}/disp1_left/disp1_left_{frame:04d}.dsp5"
+default_path = "data/spring"
+# One frame a scene, the middle one; quick tier: the first N scenes.
+quick = 10
+# Core tier: the worst, median and best depth edges, the most depth edges, the worst ordering.
+core = ["0041", "0013", "0038", "0007", "0008"]
