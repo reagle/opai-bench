@@ -1,6 +1,6 @@
 # opai-bench
 
-Benchmarks for [Open Photo AI](https://github.com/vegidio/open-photo-ai), run through its `opai` CLI, so a change to a model, a precision or the code around them is judged on many photographs and in numbers, not on the few it was tuned on. Code and scores only: no dataset file is in this repository.
+Benchmarks for [Open Photo AI](https://github.com/vegidio/open-photo-ai), run through its `opai` CLI, so a change to a model, a precision or the code around them is judged on many photographs and in numbers, not on the few it was tuned on. Code and scores only: **no dataset file is in this repository; they are fetched with the `fetch` subcommand** (`opai-bench fetch aim`, `opai-bench fetch spring`), which shows each dataset's terms and asks you to agree first (see [Datasets and their terms](#datasets-and-their-terms)).
 
 ## What it measures
 
